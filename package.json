@@ -1,0 +1,29 @@
+{
+  "name": "esbuild-plugin-simple-css-modules",
+  "version": "1.0.0",
+  "description": "simple css module transformation without intermediate writes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/hesxenon/esbuild-plugin-simple-css-modules.git"
+  },
+  "keywords": [
+    "esbuild",
+    "css-modules"
+  ],
+  "author": "Katja Potensky",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/hesxenon/esbuild-plugin-simple-css-modules/issues"
+  },
+  "homepage": "https://gitlab.com/hesxenon/esbuild-plugin-simple-css-modules#readme",
+  "dependencies": {
+    "css-tree": "^1.1.3"
+  },
+  "devDependencies": {
+    "esbuild": "^0.13.10"
+  }
+}
