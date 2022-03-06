@@ -35,10 +35,10 @@ export default (options: options = {}): Esbuild.Plugin => ({
 
       const transformClassName =
         options.transformClassName ??
-        (({ rule }) => `${namespace}--${rule.selector.replace(/\./g, "")}`);
+        (({ rule }) => `${namespace}--${rule.selector.replace(/[\.#]/g, "")}`);
 
-      ast.walkRules((node) => {
-        const selector = node.selector.slice(1); // assume primitive selectors
+      ast.walkRules(/^\.\S+$/, (node) => {
+        const selector = node.selector.slice(1);
         styles[selector] = transformClassName({
           path,
           content,
