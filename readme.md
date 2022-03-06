@@ -6,7 +6,7 @@ This plugin does not need intermediate writes and should thus be faster. Also it
 # API
 ```
 import * as Esbuild from "esbuild"
-import cssmodules from "esbuild-plugin-simple-css-plugin"
+import cssmodules from "esbuild-plugin-simple-css-modules"
 
 Esbuild.build({
   /* some build config */
