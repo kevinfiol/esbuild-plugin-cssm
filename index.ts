@@ -1,6 +1,15 @@
+import type * as Esbuild from "esbuild";
 import * as Path from "path";
-import csstree from "css-tree";
+import * as PostCss from "postcss";
 import { readFile } from "fs/promises";
+
+export type options = {
+  transformClassName?: (args: {
+    path: string;
+    content: string;
+    rule: PostCss.Rule;
+  }) => string;
+};
 
 /**
  * @param options - an object like `Options` (explained below)
@@ -12,30 +21,32 @@ import { readFile } from "fs/promises";
  * ```
  *
  */
-export default (options = {}) => ({
+export default (options: options = {}): Esbuild.Plugin => ({
   name: "simple-css-modules",
   async setup(build) {
-    const transform = async (path) => {
-      const content = await readFile(path);
-      const ast = csstree.parse(content);
-      const styles = {};
+    const transform = async (path: string) => {
+      const content = (await readFile(path)).toString();
+      const ast = PostCss.parse(content);
+      const styles: Record<string, string> = {};
 
       const namespace = Path.relative(process.cwd(), path)
         .replace(/\//g, "__")
         .replace(/\./g, "_");
-      const transformClassName =
-        options.transformClassName?.({ path, content }) ??
-        ((node) => `${namespace}--${node.name}`);
 
-      csstree.walk(ast, {
-        visit: "ClassSelector",
-        enter(node) {
-          styles[node.name] = transformClassName(node);
-          node.name = styles[node.name];
-        },
+      const transformClassName =
+        options.transformClassName ??
+        (({ rule }) => `${namespace}--${rule.selector}`);
+
+      ast.walkRules((node) => {
+        styles[node.selector] = transformClassName({
+          path,
+          content,
+          rule: node,
+        });
+        node.selector = styles[node.selector];
       });
 
-      const css = csstree.generate(ast);
+      const css = ast.toResult().css;
 
       return {
         namespace,
