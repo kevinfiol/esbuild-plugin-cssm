@@ -1,6 +1,6 @@
 {
   "name": "esbuild-plugin-simple-css-modules",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "simple css module transformation without intermediate writes",
   "main": "index.js",
   "scripts": {
