@@ -29,6 +29,6 @@
     "postcss": "^8.4.19"
   },
   "peerDependencies": {
-    "esbuild": ">= 14.x"
+    "esbuild": ">=0.14.x"
   }
 }
