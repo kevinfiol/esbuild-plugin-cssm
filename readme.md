@@ -4,7 +4,13 @@ A minimal [CSS Modules](https://github.com/css-modules/css-modules) plugin. Fork
 
 This fork makes some superficial changes to the sourcemap paths, as well as adds a hash of the filepath to CSS classes by default.
 
-# Usage
+## Install
+
+```bash
+npm install --save-dev esbuild-plugin-cssm
+```
+
+## Usage
 ```js
 import { build } from 'esbuild';
 import cssModules from 'esbuild-plugin-cssm';
