@@ -1,34 +1,34 @@
 {
-  "name": "esbuild-plugin-simple-css-modules",
-  "version": "1.0.4",
-  "description": "simple css module transformation without intermediate writes",
-  "main": "index.js",
+  "name": "esbuild-plugin-cssm",
+  "version": "1.1.0",
+  "author": "kevinfiol",
+  "license": "ISC",
+  "repository": "https://github.com/kevinfiol/esbuild-plugin-cssm",
+  "type": "module",
+  "description": "Minimal css modules esbuild plugin",
+  "main": "dist/esbuild-plugin-cssm.cjs",
+  "module": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "prepack": "npm run build"
+    "build": "node transpile.js",
+    "prepare": "node transpile.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@gitlab.com/hesxenon/esbuild-plugin-simple-css-modules.git"
+  "engines": {
+    "node": ">=14.x"
   },
+  "files": [
+    "*.d.ts",
+    "dist",
+    "index.js"
+  ],
   "keywords": [
     "esbuild",
-    "css-modules"
+    "plugin",
+    "css modules"
   ],
-  "author": "Katja Potensky",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://gitlab.com/hesxenon/esbuild-plugin-simple-css-modules/issues"
-  },
-  "homepage": "https://gitlab.com/hesxenon/esbuild-plugin-simple-css-modules#readme",
   "dependencies": {
-    "postcss": "^8.4.7"
+    "postcss": "^8.4.19"
   },
-  "devDependencies": {
-    "@types/node": "^17.0.21",
-    "esbuild": "^0.13.10",
-    "typescript": "^4.6.2"
-  },
-  "type": "module"
+  "peerDependencies": {
+    "esbuild": ">= 14.x"
+  }
 }

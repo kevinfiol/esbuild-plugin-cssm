@@ -1,2 +1,4 @@
-index.ts
-tsconfig.json
+node_modules
+pnpm-lock.yaml
+.gitignore
+transpile.js
