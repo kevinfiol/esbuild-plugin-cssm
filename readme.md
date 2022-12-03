@@ -11,6 +11,8 @@ npm install --save-dev esbuild-plugin-cssm
 ```
 
 ## Usage
+
+1. Setup
 ```js
 import { build } from 'esbuild';
 import cssModules from 'esbuild-plugin-cssm';
@@ -38,4 +40,31 @@ build({
     })
   ]
 });
+```
+
+2. Define CSS in `.module.css` files
+```css
+/* Home.module.css */
+.blue {
+  color: blue;
+}
+```
+
+3. Import the module
+```jsx
+// Home.js
+import { h } from 'preact';
+import styles from './Home.module.css';
+
+export function Home() {
+  return <div className={styles.blue}>This text is blue</div>
+}
+```
+
+4. esbuild will generate scoped CSS
+```css
+/* bundle.css */
+.Home_blue--tL5t7Tf {
+  color: blue;
+}
 ```
