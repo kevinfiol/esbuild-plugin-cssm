@@ -6,38 +6,70 @@ import { createHash } from "crypto";
 let NAMESPACE = 'css';
 
 /**
- * @typedef {(node: import('postcss').Rule, path: string, content: string) => string} TransformClassFn
- */
-
-/**
- * @typedef {object} CSSModulesOptions
- * @property {number?} hashLength Defaults to 7. Max-length of 28. Hashes are generated using SHA-1 internally.
- * @property {string?} prefix An optional prefix to prepend to every generated class.
- * @property {TransformClassFn?} transformClassName
- */
-
-/**
- * @param {CSSModulesOptions} options
  * @param {string} path
- * @returns {Promise<{ css: string, styles: Record<string, string>, importNS: string }>}
+ * @param {number} length
+ * @returns {string}
  */
+function hash(path, length) {
+    return createHash('sha1').update(path).digest('base64').slice(0, length);
+}
+
 async function transform(options, path) {
-    let content = await readFile(path),
+    let scoped = new Map(),
+        content = await readFile(path),
         moduleName = basename(path).split('.')[0],
-        relativePath = relative(process.cwd(), path),
         importNS = path.replace(/(\/|\\)/g, "/").replace(/\./g, ".") + ' ',
         ast = parse(content),
         styles = {},
         hashLength = options.hashLength || 7,
         prefix = options.prefix || '',
-        hash = p => createHash('sha1').update(p).digest('base64').slice(0, hashLength),
-        transformClassName = options.transformClassName ||
-            (node => `${prefix}${moduleName}_${node.selector.replace(/[\.#]/g, "")}--${hash(relativePath)}`);
+        pathHash = hash(relative(process.cwd(), path), hashLength),
+        transformSelector = options.transformSelector ||
+            (x => `${prefix}${moduleName}--${pathHash}_${x}`);
 
-    ast.walkRules(/^\.\S+$/, (node) => {
-        let selector = node.selector.slice(1);
-        styles[selector] = transformClassName(node, path, content);
-        node.selector = `.${styles[selector]}`;
+    ast.walkAtRules(/keyframes/, node => {
+        let selector = scoped.get(node.params);
+        if (!selector)
+            scoped.set(node.params, (selector = transformSelector(node.params, node, path, content)));
+        node.params = selector;
+    });
+
+    ast.walkRules(/[\.#]\w+/, node => {
+        let i = 0,
+            selector = node.selector,
+            decls = node.nodes,
+            attrs = selector.match(/[\.#]\w+/g),
+            sign,
+            key,
+            scopedSel;
+
+        for (; i < attrs.length; i++) {
+            sign = attrs[i][0];
+            key = attrs[i].slice(1);
+            scopedSel = scoped.get(attrs[i]);
+
+            if (!scopedSel)
+                scoped.set(attrs[i], (scopedSel = sign + transformSelector(attrs[i].replace(/[\.#]/g, ""), node, path, content)));
+
+            if (sign === '.' && !styles[key])
+                styles[key] = scopedSel;
+
+            selector = selector.replace(new RegExp(`\\${attrs[i]}\\b`), scopedSel);
+        }
+
+        for (i = 0; i < decls.length; i++) {
+            if (
+                /animation-name/.test(decls[i].prop) ||
+                /\banimation\b/.test(decls[i].prop)
+            ) {
+                for (let scopedSel, j = 0, values = decls[i].value.split(' '); j < values.length; j++)
+                    if (scopedSel = scoped.get(values[j]))
+                        decls[i].value = decls[i].value.replace(new RegExp(`\\b${values[j]}\\b`, 'g'), scopedSel);
+            }
+        }
+
+        node.selector = selector;
+        node.nodes = decls;
     });
 
     return {
@@ -47,9 +79,6 @@ async function transform(options, path) {
     };
 }
 
-/**
- * @param {CSSModulesOptions} options
- */
 export default (options = {}) => ({
     name: "esbuild-plugin-cssm",
     async setup(build) {

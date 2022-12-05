@@ -7,6 +7,7 @@
   "type": "module",
   "description": "Minimal css modules esbuild plugin",
   "main": "dist/esbuild-plugin-cssm.cjs",
+  "types": "index.d.ts",
   "module": "index.js",
   "scripts": {
     "build": "node transpile.js",
