@@ -4,7 +4,7 @@ A minimal [CSS Modules](https://github.com/css-modules/css-modules) plugin for [
 
 Changes in this fork:
 * `animation-name` support
-* `id`s are scoped
+* `id` attributes are scoped
 * Selectors containing multiple class names or ids are now properly transformed
 * Clearer sourcemap paths
 * Transformed selectors are suffixed with a hash of the filepath by default
@@ -30,7 +30,7 @@ build({
       // Defaults to 7. Max-length of 28. Hashes are generated using SHA-1 internally.
       hashLength: 7,
 
-      // Optional. A prefix to prepend to every generated class.
+      // Optional. A prefix to prepend to every generated selector.
       prefix: '',
 
       /**
