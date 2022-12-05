@@ -35,8 +35,8 @@ build({
 
       /**
        * Optional. Define a custom selector transformer.
-       * This will be run on individual ids, classes, and animation names defined with @keyframes
-       * Note: returned strings are automatically prefixed with '#' or '.'
+       * This will be run on individual ids, classes, and animation names defined with @keyframes.
+       * Note: returned strings are automatically prefixed with '#' or '.' where applicable.
        * 
        * @param {string} attr - The class, id, or animation name minus any prefixes (#, .)
        * @param {PostCSS.Rule} node - A PostCSS Rule object for the complete selector
