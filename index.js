@@ -28,10 +28,10 @@ async function transform(options, path) {
             (x => `${prefix}${moduleName}--${pathHash}_${x}`);
 
     ast.walkAtRules(/keyframes/, node => {
-        let selector = scoped.get(node.params);
-        if (!selector)
-            scoped.set(node.params, (selector = transformSelector(node.params, node, path, content)));
-        node.params = selector;
+        let scopedSel = scoped.get(node.params);
+        if (!scopedSel)
+            scoped.set(node.params, (scopedSel = transformSelector(node.params, node, path, content)));
+        node.params = scopedSel;
     });
 
     ast.walkRules(/[\.#]\w+/, node => {
@@ -45,16 +45,16 @@ async function transform(options, path) {
 
         for (; i < attrs.length; i++) {
             sign = attrs[i][0];
-            key = attrs[i].slice(1);
+            key = sign === '#' ? attrs[i] : attrs[i].slice(1);
             scopedSel = scoped.get(attrs[i]);
 
             if (!scopedSel)
-                scoped.set(attrs[i], (scopedSel = sign + transformSelector(attrs[i].replace(/[\.#]/g, ""), node, path, content)));
+                scoped.set(attrs[i], (scopedSel = transformSelector(attrs[i].replace(/[\.#]/g, ""), node, path, content)));
 
-            if (sign === '.' && !styles[key])
+            if (!styles[key])
                 styles[key] = scopedSel;
 
-            selector = selector.replace(new RegExp(`\\${attrs[i]}\\b`), scopedSel);
+            selector = selector.replace(new RegExp(`\\${attrs[i]}\\b`), sign + scopedSel);
         }
 
         for (i = 0; i < decls.length; i++) {

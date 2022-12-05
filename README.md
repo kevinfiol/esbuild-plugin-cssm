@@ -58,16 +58,28 @@ build({
 .blue {
   color: blue;
 }
+
+#red {
+  color: red;
+}
 ```
 
 3. Import the module
 ```jsx
 // Home.js
 import { h } from 'preact';
-import styles from './Home.module.css';
+import css from './Home.module.css';
 
 export function Home() {
-  return <div className={styles.blue}>This text is blue</div>
+  return <div>
+    <p className={css.blue}>
+      This text is blue
+    </p>
+
+    <p id={css['#red']}>
+      This text is red
+    </p>
+  </div>;
 }
 ```
 
@@ -76,5 +88,9 @@ export function Home() {
 /* bundle.css */
 .Home_blue--tL5t7Tf {
   color: blue;
+}
+
+#Home_red--tL5t7Tf {
+  color: red;
 }
 ```
