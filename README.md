@@ -27,8 +27,8 @@ build({
   plugins: [
     cssm({
       // Optional. Length of hash string that will be appended to CSS classes.
-      // Defaults to 7. Max-length of 28. Hashes are generated using SHA-1 internally.
-      hashLength: 7,
+      // Defaults to 6. Max-length of 28. Hashes are generated using SHA-1 internally.
+      hashLength: 6,
 
       // Optional. A prefix to prepend to every generated selector.
       prefix: '',
@@ -86,11 +86,11 @@ export function Home() {
 4. esbuild will generate scoped CSS
 ```css
 /* bundle.css */
-.Home_blue--tL5t7Tf {
+.blue_tL5t7T {
   color: blue;
 }
 
-#Home_red--tL5t7Tf {
+#red_tL5t7T {
   color: red;
 }
 ```

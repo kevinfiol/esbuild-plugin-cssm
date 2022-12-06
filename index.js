@@ -1,4 +1,4 @@
-import { relative, basename } from "path";
+import { relative } from "path";
 import { readFile } from "fs/promises";
 import { parse } from 'postcss';
 import { createHash } from "crypto";
@@ -17,15 +17,14 @@ function hash(path, length) {
 async function transform(options, path) {
     let scoped = new Map(),
         content = await readFile(path),
-        moduleName = basename(path).split('.')[0],
         importNS = path.replace(/(\/|\\)/g, "/").replace(/\./g, ".") + ' ',
         ast = parse(content),
         styles = {},
-        hashLength = options.hashLength || 7,
+        hashLength = options.hashLength || 6,
         prefix = options.prefix || '',
         pathHash = hash(relative(process.cwd(), path), hashLength),
         transformSelector = options.transformSelector ||
-            (x => `${prefix}${moduleName}--${pathHash}_${x}`);
+            (x => `${prefix}${x}_${pathHash}`);
 
     ast.walkAtRules(/keyframes/, node => {
         let scopedSel = scoped.get(node.params);

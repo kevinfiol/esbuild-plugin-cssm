@@ -6,7 +6,7 @@ type SelectorTransformer = (
 ) => string;
 
 type CSSModulesOptions = {
-    /** Defaults to 7. Max-length of 28. Hashes are generated using SHA-1 internally. */
+    /** Defaults to 6. Max-length of 28. Hashes are generated using SHA-1 internally. */
     hashLength?: number;
 
     /** An optional prefix to prepend to every generated selector. */
